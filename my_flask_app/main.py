@@ -21,75 +21,44 @@ import json
 import googleapiclient.discovery
 # [END imports]
 
+# from oauth2client.client import GoogleCredentials
+# credentials = GoogleCredentials.get_application_default()
+
 app = Flask(__name__)
+
+to_print = "temp val"
 
 
 @app.route('/')
 def hello():
-    return "Hello Bobby! Finally got this working. Post json file to " \
-           "https://communicationstation-158117.appspot.com/upload_json"
 
+    # return "It this working at all?? Hello Bobby! Finally got this working." \
+    #        "Post json file to " \
+    #        "https://communicationstation-158117.appspot.com/upload_json"
 
-# # [START form]
-# @app.route('/upload')
-# def form():
-#     return render_template('form.html')
-# # [END form]
-#
-#
-# # [START submitted]
-# @app.route('/submitted', methods=['POST'])
-# def submitted_form():
-#     name = request.form['name']
-#     email = request.form['email']
-#     site = request.form['site_url']
-#     comments = request.form['comments']
-#
-#     # [START render_template]
-#     return render_template(
-#         'submitted_form.html',
-#         name=name,
-#         email=email,
-#         site=site,
-#         comments=comments)
-#     # [END render_template]
-# # [END submitted]
-
-# NEXT OBJECTIVES
-# connect app to backend
-# try out google intent API
-# get icons from somewhere
-
-
-def analyze_entities(text, encoding='UTF8'):
-    body = {
-        'document': {
-            'type': 'PLAIN_TEXT',
-            'content': text,
-        },
-        'encodingType': encoding
-    }
-
-    service = googleapiclient.discovery.build('language', 'v1')
-    request = service.documents().analyzeEntities(body=body)
-
-    return body
-
-    # response = request.execute()
-    #
-    # return response
-
-# get the post route to anaylze the data
+    return to_print
 
 
 # [START upload_json]
 @app.route('/upload_json', methods=['POST'])
 def submitted_form():
+
+    # body={
+    #     'document': {
+    #         'type': 'PLAIN_TEXT',
+    #         'content': prompt,
+    #     }
+
     prompt = request.get_json()
 
-    analysis = analyze_entities(prompt["question"])
+    service = googleapiclient.discovery.build('language', 'v1')
+    service_request = service.documents().analyzeEntities(body=prompt)
+    response = service_request.execute()
 
-    return json.dumps(analysis)
+    to_print = json.dumps(response)
+
+    return json.dumps(response)
+
 # [END upload_json]
 
 
